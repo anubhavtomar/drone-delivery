@@ -47,15 +47,15 @@ public class Order_Item_Comparator implements Comparator<Order_Item> {
 		super();
 		this.current_delivery_time = _t;
 		_priority_map = new HashMap<String, Integer>();
-		this._priority_map.put("<0.5", 4); // Promoter
+		this._priority_map.put("<0.5", 2); // Promoter
 		this._priority_map.put("<1.0", 3); // Promoter
-		this._priority_map.put("<1.5", 2); // Promoter
-		this._priority_map.put("<2.0", 1); // Promoter
-		this._priority_map.put("<2.5", 4); // Neutral
+		this._priority_map.put("<1.5", 4); // Promoter
+		this._priority_map.put("<2.0", 5); // Promoter
+		this._priority_map.put("<2.5", 2); // Neutral
 		this._priority_map.put("<3.0", 3); // Neutral
-		this._priority_map.put("<3.5", 2); // Neutral
-		this._priority_map.put("<4.0", 1); // Neutral
-		this._priority_map.put(">4.5", 5); // Detractor
+		this._priority_map.put("<3.5", 4); // Neutral
+		this._priority_map.put("<4.0", 5); // Neutral
+		this._priority_map.put(">4.5", 1); // Detractor
 	}
 
 	public void set_current_delivery_time(Date _t) {
@@ -73,11 +73,11 @@ public class Order_Item_Comparator implements Comparator<Order_Item> {
 		int priority_1 = this._priority_map.get(key_1);
 		int priority_2 = this._priority_map.get(key_2);
 		if (priority_1 > priority_2) {
-			return 1;
-		} else if (priority_1 < priority_2) {
 			return -1;
+		} else if (priority_1 < priority_2) {
+			return 1;
 		} else {
-			return o1.get_distance() < o2.get_distance() ? 1 : -1;
+			return o1.get_distance() < o2.get_distance() ? -1 : 1;
 		}
 	}
 }

@@ -24,7 +24,7 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 	PriorityQueue<Order_Item> orders_q;
 	List<Order_Item> orders_list;
 	int _q_size;
-	File_Parser _f;
+	File_Parser f_inst;
 	SimpleDateFormat format;
 	double NPS;
 	int num_promoters;
@@ -54,7 +54,7 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 			this.num_detractors++;
 		}
 		int total = this.orders_list.size();
-		this.NPS = ((this.num_promoters - this.num_detractors) / total) * 100;
+		this.NPS = (this.num_promoters - this.num_detractors) * 100 / total;
 	}
 
 	public Order_Warehouse(String file_name) {
@@ -67,7 +67,7 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 		this.orders_q = new PriorityQueue<Order_Item>(new Order_Item_Comparator(this.current_delivery_time));
 		this.orders_list = new ArrayList<Order_Item>();
 		this._q_size = 0;
-		this._f = new File_Parser(file_name);
+		this.f_inst = new File_Parser(file_name);
 		this.num_promoters = 0;
 		this.num_detractors = 0;
 	}
@@ -77,10 +77,12 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 		return this.current_delivery_time;
 	}
 
+	@Override
 	public double get_NPS() {
 		return this.NPS;
 	}
 
+	@Override
 	public boolean is_empty() {
 		return this._q_size == 0;
 	}
@@ -88,6 +90,11 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 	@Override
 	public void update_size() {
 		this._q_size = this.orders_q.size();
+	}
+	
+	@Override
+	public void close_file () {
+		this.f_inst.close_file();
 	}
 
 	@Override
@@ -102,8 +109,7 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 		this.current_delivery_time = this.add_delta(this.current_delivery_time, _m);
 		_d /= 2;
 		_m = (int) (_d * 60 * 1000);
-		long delta = this.add_delta(this.current_delivery_time, -_m).getTime()
-				- _res.get_receive_time_stamp().getTime();
+		long delta = this.add_delta(this.current_delivery_time, -_m).getTime() - _res.get_receive_time_stamp().getTime();
 		delta = delta / (60 * 60 * 1000) % 24;
 		_res.set_category(this.compute_order_category(delta));
 		this.orders_list.add(_res);
@@ -114,12 +120,14 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 
 	@Override
 	public synchronized int add_order() {
-		List<Order_Item> _l = this._f.readFile(this.current_delivery_time);
+		List<Order_Item> _l = this.f_inst.readFile(this.current_delivery_time);
 		try {
-			boolean status = this.orders_q.addAll(_l);
+			boolean status = false;
+			for(Order_Item _o : _l) {
+				status = this.orders_q.add(_o);
+			}
 			this.update_size();
-			System.out
-					.println(status ? "New items are inserted in the queue" : "Got error while inserting in the queue");
+			System.out.println(status ? "New items are inserted in the queue" : "Got error while inserting in the queue");
 			System.out.println("Queue Size : " + this._q_size);
 			return _l.size();
 		} catch (Error err) {

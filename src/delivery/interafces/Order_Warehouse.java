@@ -20,4 +20,10 @@ public interface Order_Warehouse {
 	public Order_Item remove_order();
 
 	public int add_order();
+	
+	public void close_file ();
+	
+	public double get_NPS();
+	
+	public boolean is_empty();
 }

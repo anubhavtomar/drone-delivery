@@ -32,9 +32,18 @@ public class File_Writer {
 		}
 		this.format = new SimpleDateFormat("HH:mm:ss");
 	}
+	
+	public void close_file () {
+		try {
+			System.out.println("Closing Output File");
+			this.out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void write(Order_Item _o) {
-		this.write(_o.get_id() + " " + _o.get_delivery_time_stamp().toString());
+		this.write(_o.get_id() + " " + this.format.format(_o.get_delivery_time_stamp()).toString());
 	}
 
 	public void write(String _s) {

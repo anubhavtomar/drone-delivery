@@ -21,6 +21,7 @@ public class Master_Thread extends Thread {
 	Warehouse_Thread warehouse_th;
 	Writer_Thread writer_th;
 	boolean START;
+	boolean STOP;
 
 	public Master_Thread(String name, Order_Warehouse _w, File_Writer _f, Queue<Order_Item> _o) {
 		super();
@@ -30,28 +31,53 @@ public class Master_Thread extends Thread {
 		this.warehouse_th = new Warehouse_Thread("Warehouse Thread", this.warehouse);
 		this.writer_th = new Writer_Thread("Writer Thread", _f, this.output_buffer);
 		this.START = false;
+		this.STOP = false;
+	}
+	
+	public void stop_thread () {
+		this.STOP = true;
 	}
 
 	@Override
 	public void run() {
+		if(this.STOP) {
+			System.out.println("Interrupting Master Thread");
+			return;
+		}
 		if (!this.START) {
+			System.out.println("Starting Warehouse Thread");
 			this.warehouse_th.start();
+			System.out.println("Starting Drone Thread");
 			this.drone_th.start();
-			while (this.output_buffer.size() < 10)
-				;
+			System.out.println("Starting Writer Thread");
 			this.writer_th.start();
 			this.START = true;
 		}
-		if (this.warehouse.is_empty() && this.warehouse_th.isInterrupted()) {
-			this.drone_th.interrupt();
+		if (this.warehouse.is_empty() && !this.warehouse_th.isAlive()) {
+			this.drone_th.stop_thread();
 			if (this.output_buffer.isEmpty()) {
 				this.writer_th.f_inst.write("NPS " + this.warehouse.get_NPS());
-				this.writer_th.interrupt();
+				try {
+					sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.writer_th.stop_thread();
+				try {
+					sleep(0);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		if (this.writer_th.isInterrupted()) {
-			this.interrupt();
+		if (!this.writer_th.isAlive()) {
+			this.stop_thread();
 			return;
+		}
+		try {
+			sleep(10);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		this.run();
 	}

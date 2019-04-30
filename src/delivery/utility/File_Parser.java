@@ -25,7 +25,7 @@ public class File_Parser {
 	String file_name;
 	File file_handle;
 	Scanner file_scanner;
-	String distance_regex = "[NSEW](\\d+)[NSEW](\\d+)";
+	String distance_regex = "\\d+";
 	Pattern pattern;
 	SimpleDateFormat format;
 
@@ -37,21 +37,32 @@ public class File_Parser {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		this.pattern = Pattern.compile(distance_regex);
+		this.pattern = Pattern.compile(this.distance_regex);
 		this.format = new SimpleDateFormat("HH:mm:ss");
+	}
+	
+	public void close_file () {
+		System.out.println("Closing Input File");
+		this.file_scanner.close();
 	}
 
 	public List<Order_Item> readFile(Date _d) {
 		List<Order_Item> _res = new ArrayList<>();
-		Matcher matcher;
+		Matcher _m;
 		while (this.file_scanner.hasNextLine()) {
 			String line = this.file_scanner.nextLine();
 			String[] words = line.split(" ");
 			double _dist;
-			matcher = pattern.matcher(words[1]);
-			int x = Integer.parseInt(matcher.group(1));
-			int y = Integer.parseInt(matcher.group(2));
-			_dist = Math.sqrt((x * x) + (y * y));
+			_m = pattern.matcher(words[1]);
+			int x = 0;
+			int y = 0;
+			if(_m.find()) {
+				x = Integer.parseInt(_m.group());
+			}
+			if(_m.find()) {
+				y = Integer.parseInt(_m.group());
+			}
+			_dist = Math.sqrt(x * x + y * y);
 			Date _dt = new Date();
 			try {
 				_dt = this.format.parse(words[2]);

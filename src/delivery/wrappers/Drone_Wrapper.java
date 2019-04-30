@@ -31,6 +31,7 @@ public class Drone_Wrapper {
 
 	public void start_drone_delivery() {
 		try {
+			System.out.println("Starting Master Thread");
 			this.master_th.start();
 		} catch (Error err) {
 			System.out.println(err);
