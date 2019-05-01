@@ -18,7 +18,7 @@ Assumptions
 * Detractors are considered to be with time to delivery >=4 hours.
 * Orders in the input file matches the sample given in the problem. I am using a RegEx match on the full string. RegEx: "^WM\\d+\\s([NSEW]\\d+){1,2}\\s([0-9]{2}+[:]){2}[0-9]{2}$". If there is no match, I am skipping the order.
 * OrderId should start with WM followed by any number of digits i.e WM####
-* Direction should have NSEW followed by any number of digits. There could be at most 2 times the same sequence can occur. And there should not be any complementary directino combination e.f N2S1 or E4W5. These cases should be handled in the part of code which is handling the order generation.
+* Direction should have NSEW followed by any number of digits. There could be at most 2 times the same sequence can occur. And there should not be any complementary direction combinations e.f N2S1 or E4W5. These cases should be handled in the part of code which is handling the order generation.
 * Timestamp should follow HH:mm:SS.
 
 Design
