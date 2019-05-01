@@ -126,7 +126,7 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 	}
 
 	@Override
-	public synchronized int add_order() {
+	public synchronized boolean add_order() {
 		List<Order_Item> _l = this.f_inst.readFile(this.current_delivery_time);
 		try {
 			boolean status = false;
@@ -134,13 +134,24 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 				status = this.orders_q.add(_o);
 			}
 			this.update_size();
+			if(this._q_size != 0) {
+				Order_Item _o = this.orders_q.peek();
+				if(_o.get_receive_time_stamp().after(this.current_delivery_time)) {
+					try {
+						this.current_delivery_time = this.format.parse(this.format.format(_o.get_receive_time_stamp()));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			System.out.println("Fetched " + _l.size() + " New orders");
 //			System.out.println(this.current_delivery_time.toString() +  (status ? " | New items are inserted in the queue" : " | Got error while inserting in the queue"));
 //			System.out.println("Queue Size : " + this._q_size);
-			return _l.size();
+			return this.f_inst.is_end_of_file();
 		} catch (Error err) {
 //			System.out.println(err);
 //			System.out.println(this.current_delivery_time.toString() + " | Got error while inserting in the queue");
-			return 0;
+			return true;
 		}
 	}
 

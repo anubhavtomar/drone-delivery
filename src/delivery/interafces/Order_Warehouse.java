@@ -19,7 +19,7 @@ public interface Order_Warehouse {
 
 	public Order_Item remove_order();
 
-	public int add_order();
+	public boolean add_order();
 	
 	public void close_file ();
 	

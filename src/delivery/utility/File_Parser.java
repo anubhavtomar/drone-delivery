@@ -31,6 +31,33 @@ public class File_Parser {
 	Pattern distance_pattern;
 	SimpleDateFormat format;
 	String prev_str_read;
+	
+	private Order_Item parse_and_add_line (String line , Date _d , boolean to_check) {
+		Matcher _m;
+		String[] words = line.split(" ");
+		double _dist;
+		_m = this.distance_pattern.matcher(words[1]);
+		int x = 0;
+		int y = 0;
+		if(_m.find()) {
+			x = Integer.parseInt(_m.group());
+		}
+		if(_m.find()) {
+			y = Integer.parseInt(_m.group());
+		}
+		_dist = Math.sqrt(x * x + y * y);
+		Date _dt = new Date();
+		try {
+			_dt = this.format.parse(words[2]);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		if(to_check && _dt.after(_d)) {
+			this.prev_str_read = line;
+			return null;
+		}
+		return new Order_Item(words[0], _dist, _dt);
+	}
 
 	public File_Parser(String _f) {
 //		this.file_name = "files/" + _f;
@@ -52,38 +79,15 @@ public class File_Parser {
 		this.file_scanner.close();
 	}
 	
-	private Order_Item parse_and_add_line (String line , Date _d) {
-		Matcher _m;
-		String[] words = line.split(" ");
-		double _dist;
-		_m = this.distance_pattern.matcher(words[1]);
-		int x = 0;
-		int y = 0;
-		if(_m.find()) {
-			x = Integer.parseInt(_m.group());
-		}
-		if(_m.find()) {
-			y = Integer.parseInt(_m.group());
-		}
-		_dist = Math.sqrt(x * x + y * y);
-		Date _dt = new Date();
-		try {
-			_dt = this.format.parse(words[2]);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		if(_dt.after(_d)) {
-			this.prev_str_read = line;
-			return null;
-		}
-		return new Order_Item(words[0], _dist, _dt);
+	public boolean is_end_of_file () {
+		return this.prev_str_read.length() == 0 && !this.file_scanner.hasNextLine();
 	}
 
 	public List<Order_Item> readFile(Date _d) {
 		List<Order_Item> _res = new ArrayList<>();
 		Order_Item _o;
 		if(this.prev_str_read.length() != 0) {
-			_o = this.parse_and_add_line(this.prev_str_read , _d);
+			_o = this.parse_and_add_line(this.prev_str_read , _d , false);
 			_res.add(_o);
 			this.prev_str_read = "";
 		}
@@ -92,7 +96,7 @@ public class File_Parser {
 			if(!this.order_pattern.matcher(line).matches()) {
 				continue;
 			}
-			_o = this.parse_and_add_line(line , _d);
+			_o = this.parse_and_add_line(line , _d , true);
 			if(_o == null) {
 				break;
 			}

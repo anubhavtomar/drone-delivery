@@ -46,10 +46,9 @@ public class Warehouse_Thread extends Thread {
 			this.w_inst.close_file();
 			return;
 		}
-		int o_count = this.w_inst.add_order();
+		boolean is_end_of_file = this.w_inst.add_order();
 		this.current_time_stamp = this.w_inst.get_delivery_time();
-		System.out.println("Fetched " + o_count + " New orders");
-		if (o_count == 0) {
+		if (is_end_of_file) {
 			this.stop_thread();
 		} else {
 			while (this.w_inst.get_delivery_time().compareTo(this.add_delta(this.current_time_stamp, 30 * 60 * 1000)) < 0) {

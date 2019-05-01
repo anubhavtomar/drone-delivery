@@ -21,6 +21,7 @@ public class Main {
 		}
 		Drone_Wrapper drone = new Drone_Wrapper(args[0]);
 //		Drone_Wrapper drone = new Drone_Wrapper("/Users/anubhav/repo/drone-delivery/files/input.txt");
+//		Drone_Wrapper drone = new Drone_Wrapper("/Users/anubhav/Desktop/input.txt");
 		drone.start_drone_delivery();
 	}
 }
