@@ -39,9 +39,9 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 	}
 
 	private Order_Category compute_order_category(long _h) {
-		if (_h > 0 && _h < 2) {
+		if (_h >= 0 && _h < 2) {
 			return Order_Category.Promoter;
-		} else if (_h > 0 && _h < 2) {
+		} else if (_h >= 2 && _h < 4) {
 			return Order_Category.Neutral;
 		} else {
 			return Order_Category.Detractor;
