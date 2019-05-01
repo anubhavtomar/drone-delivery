@@ -22,13 +22,14 @@ Assumptions
 * Timestamp should follow HH:mm:SS.
 
 Design
-* 6 packages delivery.interfaces, delivery.main, delivery.store, delivery.threads, delivery.utility, delivery.wrappers.
-* delivery.interface has 2 interface: Order_Item.java, Order_Warehouse.java
+* 6 packages: delivery.interfaces, delivery.main, delivery.store, delivery.threads, delivery.utility, delivery.wrappers
+* delivery.interface has 2 interfaces: Order_Item.java, Order_Warehouse.java
 * delivery.main has the Main.java class.
 * delivery.store has 2 classes: Order_Item.java, Order_Warehouse.java
 * delivery.threads has 4 thread classes: Drone_Thread.java, Mater_Thread.java, Warehouse_Thread.java, Writer_Thread.java
 * delivery.utility has 3 classes: File_Parser.java, File_Writer.java, Order_Category_Comaparator.java; 1 enum: Order_Category.java
 * delivery.wrappers has 1 class: Drone_Wrapper.java
+* Order_Warehouse.java class is using a priority queue with a modified Order_Category_Comaparator.java class
 
 Execution Flow
 * Main class calls the start_delivery function of the Drone_Wrapper class.
