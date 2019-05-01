@@ -32,16 +32,16 @@ public class Writer_Thread extends Thread {
 	@Override
 	public void run() {
 		if(this.STOP) {
-			System.out.println("Interrupting Writer Thread");
+			System.out.println("Stopping Writer Thread");
 			this.f_inst.close_file();
 			return;
 		}
 		while (!this.output_buffer.isEmpty()) {
-			System.out.println("Writing");
+//			System.out.println("Writing");
 			this.f_inst.write(this.output_buffer.remove());
 		}
 		try {
-			sleep(10);
+			sleep(1);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

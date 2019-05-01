@@ -22,10 +22,10 @@ public class Drone_Wrapper {
 	Queue<Order_Item> output_buffer;
 	Master_Thread master_th;
 
-	public Drone_Wrapper(String f_in, String f_out) {
+	public Drone_Wrapper(String f_in) {
 		this.warehouse = new Order_Warehouse(f_in);
-		this._writer = new File_Writer(f_out);
-		this.output_buffer = new ArrayDeque<Order_Item>(10);
+		this._writer = new File_Writer(f_in);
+		this.output_buffer = new ArrayDeque<Order_Item>(100);
 		this.master_th = new Master_Thread("Master Thread", this.warehouse, this._writer, this.output_buffer);
 	}
 

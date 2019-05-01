@@ -15,10 +15,12 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//		Drone_Wrapper drone = new Drone_Wrapper(args[0], args[1]);
-		Drone_Wrapper drone = new Drone_Wrapper("input.txt", "output.txt");
+		if(args.length == 0) {
+			System.out.println("Error: Invalid input file argument");
+			return;
+		}
+		Drone_Wrapper drone = new Drone_Wrapper(args[0]);
+//		Drone_Wrapper drone = new Drone_Wrapper("/Users/anubhav/repo/drone-delivery/files/input.txt");
 		drone.start_drone_delivery();
-
 	}
-
 }

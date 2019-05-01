@@ -21,6 +21,7 @@ import delivery.utility.*;
 public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 
 	Date current_delivery_time;
+	Date delivery_stopping_time;
 	PriorityQueue<Order_Item> orders_q;
 	List<Order_Item> orders_list;
 	int _q_size;
@@ -61,6 +62,7 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 		this.format = new SimpleDateFormat("HH:mm:ss");
 		try {
 			this.current_delivery_time = this.format.parse("06:00:00");
+			this.delivery_stopping_time = this.format.parse("22:00:00");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -90,6 +92,7 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 	@Override
 	public void update_size() {
 		this._q_size = this.orders_q.size();
+//		System.out.println("Queue Size : " + this._q_size);
 	}
 	
 	@Override
@@ -107,6 +110,10 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 		double _d = 2 * _res.get_distance();
 		int _m = (int) (_d * 60 * 1000);
 		this.current_delivery_time = this.add_delta(this.current_delivery_time, _m);
+		if(this.current_delivery_time.after(this.delivery_stopping_time)) {
+			this.update_size();
+			return null;
+		}
 		_d /= 2;
 		_m = (int) (_d * 60 * 1000);
 		long delta = this.add_delta(this.current_delivery_time, -_m).getTime() - _res.get_receive_time_stamp().getTime();
@@ -127,12 +134,12 @@ public class Order_Warehouse implements delivery.interafces.Order_Warehouse {
 				status = this.orders_q.add(_o);
 			}
 			this.update_size();
-			System.out.println(status ? "New items are inserted in the queue" : "Got error while inserting in the queue");
-			System.out.println("Queue Size : " + this._q_size);
+//			System.out.println(this.current_delivery_time.toString() +  (status ? " | New items are inserted in the queue" : " | Got error while inserting in the queue"));
+//			System.out.println("Queue Size : " + this._q_size);
 			return _l.size();
 		} catch (Error err) {
-			System.out.println(err);
-			System.out.println("Got error while inserting in the queue");
+//			System.out.println(err);
+//			System.out.println(this.current_delivery_time.toString() + " | Got error while inserting in the queue");
 			return 0;
 		}
 	}

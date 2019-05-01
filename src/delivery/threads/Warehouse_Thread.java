@@ -42,7 +42,7 @@ public class Warehouse_Thread extends Thread {
 	@Override
 	public void run() {
 		if(this.STOP) { 
-			System.out.println("Interrupting Warehouse Thread");
+			System.out.println("Stopping Warehouse Thread");
 			this.w_inst.close_file();
 			return;
 		}
@@ -52,10 +52,14 @@ public class Warehouse_Thread extends Thread {
 		if (o_count == 0) {
 			this.stop_thread();
 		} else {
-			while (this.w_inst.get_delivery_time().compareTo(this.add_delta(this.current_time_stamp, 30 * 60 * 1000)) < 0);
+			while (this.w_inst.get_delivery_time().compareTo(this.add_delta(this.current_time_stamp, 30 * 60 * 1000)) < 0) {
+				if(this.w_inst.is_empty()) {
+					break;
+				}
+			};
 		}
 		try {
-			sleep(10);
+			sleep(1);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

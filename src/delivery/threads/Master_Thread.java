@@ -41,7 +41,7 @@ public class Master_Thread extends Thread {
 	@Override
 	public void run() {
 		if(this.STOP) {
-			System.out.println("Interrupting Master Thread");
+			System.out.println("Stopping Master Thread");
 			return;
 		}
 		if (!this.START) {
@@ -53,29 +53,28 @@ public class Master_Thread extends Thread {
 			this.writer_th.start();
 			this.START = true;
 		}
-		if (this.warehouse.is_empty() && !this.warehouse_th.isAlive()) {
+		if (!this.warehouse_th.isAlive() && this.warehouse.is_empty()) {
 			this.drone_th.stop_thread();
-			if (this.output_buffer.isEmpty()) {
-				this.writer_th.f_inst.write("NPS " + this.warehouse.get_NPS());
-				try {
-					sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				this.writer_th.stop_thread();
-				try {
-					sleep(0);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+		}
+		if (!this.drone_th.isAlive() && this.output_buffer.isEmpty()) {
+			this.writer_th.f_inst.write("NPS " + this.warehouse.get_NPS());
+			try {
+				sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			this.writer_th.stop_thread();
+			try {
+				sleep(20);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 		if (!this.writer_th.isAlive()) {
 			this.stop_thread();
-			return;
 		}
 		try {
-			sleep(10);
+			sleep(1);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

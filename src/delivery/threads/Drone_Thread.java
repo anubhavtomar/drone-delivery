@@ -33,17 +33,23 @@ public class Drone_Thread extends Thread {
 	@Override
 	public void run() {
 		if(this.STOP) {
-			System.out.println("Interrupting Drone Thread");
+			System.out.println("Stopping Drone Thread");
 			return;
 		}
 		try {
-			this.output_buffer.add(this.w_inst.remove_order());
+			Order_Item _o = this.w_inst.remove_order();
+			if(_o == null) {
+				this.stop_thread();
+				this.run();
+				return;
+			}
+			this.output_buffer.add(_o);
+//			System.out.println("Output Buffer Size : " + this.output_buffer.size());
 		} catch (NoSuchElementException _e) {
 			_e.printStackTrace();
-			this.stop_thread();
 		}
 		try {
-			sleep(10);
+			sleep(1);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
